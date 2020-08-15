@@ -1,0 +1,7 @@
+execute store result score @s RacecartXSpeed run data get entity @s Motion[0] 100
+execute store result score @s RacecartZSpeed run data get entity @s Motion[2] 100
+
+execute as @s[scores={RacecartXSpeed=200..}] at @s if block ~1 ~ ~ #minecraft:rails[shape=east_west] if block ~1 ~-1 ~ minecraft:soul_soil run tp @s ~3 ~ ~
+execute as @s[scores={RacecartXSpeed=..-200}] at @s if block ~-1 ~ ~ #minecraft:rails[shape=east_west] if block ~-1 ~-1 ~ minecraft:soul_soil run tp @s ~-3 ~ ~
+execute as @s[scores={RacecartZSpeed=200..}] at @s if block ~ ~ ~1 #minecraft:rails[shape=north_south] if block ~ ~-1 ~1 minecraft:soul_soil run tp @s ~ ~ ~3
+execute as @s[scores={RacecartZSpeed=..-200}] at @s if block ~ ~ ~-1 #minecraft:rails[shape=north_south] if block ~ ~-1 ~-1 minecraft:soul_soil run tp @s ~ ~ ~-3
