@@ -14,21 +14,28 @@ execute as @s[scores={RacecartXSpeed=90..}] at @s if block ~ ~ ~ #minecraft:rail
 execute as @s[scores={RacecartXSpeed=..-90}] at @s if block ~ ~ ~ #minecraft:rails[shape=east_west] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players remove @s RacecartXSpeed 5
 execute as @s[scores={RacecartZSpeed=90..}] at @s if block ~ ~ ~ #minecraft:rails[shape=north_south] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players add @s RacecartZSpeed 5
 execute as @s[scores={RacecartZSpeed=..-90}] at @s if block ~ ~ ~ #minecraft:rails[shape=north_south] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players remove @s RacecartZSpeed 5
+#
+# execute as @s[scores={RacecartXSpeed=90..}] at @s if block ~ ~ ~ #minecraft:rails[shape=east_west] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players set @s RacecartXSpeed 225
+# execute as @s[scores={RacecartXSpeed=..-90}] at @s if block ~ ~ ~ #minecraft:rails[shape=east_west] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players set @s RacecartXSpeed -225 
+# execute as @s[scores={RacecartZSpeed=90..}] at @s if block ~ ~ ~ #minecraft:rails[shape=north_south] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players set @s RacecartZSpeed 225 
+# execute as @s[scores={RacecartZSpeed=..-90}] at @s if block ~ ~ ~ #minecraft:rails[shape=north_south] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players set @s RacecartZSpeed -225
 
 # Show soul particles
-execute as @s[scores={RacecartXSpeed=..-95}] at @s if block ~1 ~ ~ #minecraft:rails[shape=east_west] if block ~1 ~-1 ~ minecraft:soul_soil facing ~1 ~ ~ run function racecarts:soul_particles
-execute as @s[scores={RacecartXSpeed=..-95}] at @s if block ~-1 ~ ~ #minecraft:rails[shape=east_west] if block ~-1 ~-1 ~ minecraft:soul_soil facing ~-1 ~ ~ run function racecarts:soul_particles
-execute as @s[scores={RacecartZSpeed=95..}] at @s if block ~ ~ ~1 #minecraft:rails[shape=north_south] if block ~ ~-1 ~1 minecraft:soul_soil facing ~ ~ ~1 run function racecarts:soul_particles
-execute as @s[scores={RacecartZSpeed=..-95}] at @s if block ~ ~ ~-1 #minecraft:rails[shape=north_south] if block ~ ~-1 ~-1 minecraft:soul_soil facing ~ ~ ~-1 run function racecarts:soul_particles
+execute as @s[scores={RacecartXSpeed=95..}] at @s if block ~1 ~ ~ #minecraft:rails[shape=east_west] if block ~1 ~-1 ~ minecraft:soul_soil facing ~1 ~ ~ run function racecarts:move
+execute as @s[scores={RacecartXSpeed=..-95}] at @s if block ~-1 ~ ~ #minecraft:rails[shape=east_west] if block ~-1 ~-1 ~ minecraft:soul_soil facing ~-1 ~ ~ run function racecarts:move
+execute as @s[scores={RacecartZSpeed=95..}] at @s if block ~ ~ ~1 #minecraft:rails[shape=north_south] if block ~ ~-1 ~1 minecraft:soul_soil facing ~ ~ ~1 run function racecarts:move
+execute as @s[scores={RacecartZSpeed=..-95}] at @s if block ~ ~ ~-1 #minecraft:rails[shape=north_south] if block ~ ~-1 ~-1 minecraft:soul_soil facing ~ ~ ~-1 run function racecarts:move
 
-# Cap speed at 2.25
-execute as @s[scores={RacecartXSpeed=225..}] run scoreboard players set @s RacecartXSpeed 225
-execute as @s[scores={RacecartXSpeed=..-225}] run scoreboard players set @s RacecartXSpeed -225
-execute as @s[scores={RacecartZSpeed=225..}] run scoreboard players set @s RacecartZSpeed 225
-execute as @s[scores={RacecartZSpeed=..-225}] run scoreboard players set @s RacecartZSpeed -225
+# Cap speed at 1.0 which is the max value that the game allows
+execute as @s[scores={RacecartXSpeed=100..}] run scoreboard players set @s RacecartXSpeed 100
+execute as @s[scores={RacecartXSpeed=..-100}] run scoreboard players set @s RacecartXSpeed -100
+execute as @s[scores={RacecartZSpeed=100..}] run scoreboard players set @s RacecartZSpeed 100
+execute as @s[scores={RacecartZSpeed=..-100}] run scoreboard players set @s RacecartZSpeed -100
 
 # Set increased minecart speed. Multiply by 0.01 to reverse the scoreboard scale
-# factor.
+# factor. This is just to make sure that the minecart keeps moving at a base
+# speed. The actual "faster minecart" behavior is achived with the tp command in
+# the `move` function.
 execute as @s[scores={RacecartXSpeed=95..}] store result entity @s Motion[0] double 0.01 run scoreboard players get @s RacecartXSpeed
 execute as @s[scores={RacecartXSpeed=..-95}] store result entity @s Motion[0] double 0.01 run scoreboard players get @s RacecartXSpeed
 execute as @s[scores={RacecartZSpeed=95..}] store result entity @s Motion[2] double 0.01 run scoreboard players get @s RacecartZSpeed
