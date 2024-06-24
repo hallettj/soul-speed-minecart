@@ -1,3 +1,4 @@
+# RacecartTimer is used to control how often soul particles appear.
 # Decrement RacecartTimer every tick while the value is greater than zero.
 execute if score @s RacecartTimer matches 1.. run scoreboard players remove @s RacecartTimer 1
 
