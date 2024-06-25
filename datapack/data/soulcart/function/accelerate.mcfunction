@@ -20,20 +20,23 @@ execute store result score @s SoulCartZGameSpeed run data get entity @s Motion[2
 # - 3 North
 # - -1 not accelerated
 scoreboard players set @s SoulCartDirection -1
-execute if score @s SoulCartXGameSpeed matches 90.. if block ~ ~ ~ #minecraft:rails[shape=east_west] run scoreboard players set @s SoulCartDirection 0
-execute if score @s SoulCartXGameSpeed matches ..-90 if block ~ ~ ~ #minecraft:rails[shape=east_west] run scoreboard players set @s SoulCartDirection 1
-execute if score @s SoulCartZGameSpeed matches 90.. if block ~ ~ ~ #minecraft:rails[shape=north_south] run scoreboard players set @s SoulCartDirection 2
-execute if score @s SoulCartZGameSpeed matches ..-90 if block ~ ~ ~ #minecraft:rails[shape=north_south] run scoreboard players set @s SoulCartDirection 3
+execute if score @s SoulCartXGameSpeed matches 90.. run scoreboard players set @s SoulCartDirection 0
+execute if score @s SoulCartXGameSpeed matches ..-90 run scoreboard players set @s SoulCartDirection 1
+execute if score @s SoulCartZGameSpeed matches 90.. run scoreboard players set @s SoulCartDirection 2
+execute if score @s SoulCartZGameSpeed matches ..-90 run scoreboard players set @s SoulCartDirection 3
 
 # (I'd line these clauses up, but commands actually fail to parse if there are
 # multiple spaces between tokens.)
 
+# Set `SoulCartOnRails` - this line requires `SoulCartDirection` to be set
+function soulcart:check_on_rails
+
 # Conditions are met for high-speed acceleration if the cart's base speed is
-# over the threshold and on straight, level track (indicated by
-# `SoulCartDirection`), there is a player in the cart, and the cart is over soul
-# soil.
+# over the threshold (indicated by `SoulCartDirection`), on straight, level
+# track (indicated by `SoulCartOnRails`), there is a player in the cart, and the
+# cart is over soul soil.
 scoreboard players set @s SoulCartAccelerating 0
-execute if score @s SoulCartDirection matches 0.. if entity @p[distance=..1] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players set @s SoulCartAccelerating 1
+execute if score @s SoulCartDirection matches 0.. if score @s SoulCartOnRails matches 1 if entity @p[distance=..1] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players set @s SoulCartAccelerating 1
 
 # Initialize SoulCartSpeed if it is not already set
 execute unless score @s SoulCartSpeed matches 90.. run scoreboard players set @s SoulCartSpeed 90
@@ -68,7 +71,5 @@ execute if score @s SoulCartSpeed matches 250.. run scoreboard players set @s So
 #
 # (Adding `at @s` updates the execute position to the minecart's new position
 # after teleport.)
-execute at @s if score @s SoulCartSpeed matches 100.. if score @s SoulCartDirection matches 0 unless block ~ ~ ~ #minecraft:rails[shape=east_west] run function soulcart:schedule_explosion
-execute at @s if score @s SoulCartSpeed matches 100.. if score @s SoulCartDirection matches 1 unless block ~ ~ ~ #minecraft:rails[shape=east_west] run function soulcart:schedule_explosion
-execute at @s if score @s SoulCartSpeed matches 100.. if score @s SoulCartDirection matches 2 unless block ~ ~ ~ #minecraft:rails[shape=north_south] run function soulcart:schedule_explosion
-execute at @s if score @s SoulCartSpeed matches 100.. if score @s SoulCartDirection matches 3 unless block ~ ~ ~ #minecraft:rails[shape=north_south] run function soulcart:schedule_explosion
+execute at @s run function soulcart:check_on_rails
+execute at @s if score @s SoulCartSpeed matches 100.. if score @s SoulCartOnRails matches 0 run function soulcart:schedule_explosion
