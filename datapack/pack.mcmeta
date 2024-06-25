@@ -1,7 +1,14 @@
 {
   "pack": {
     "pack_format": 48,
-    "description": "Make minecarts go faster on soul soil"
+    "description": [
+      "Minecarts go fast on soul soil",
+      {
+	"text": "\nBeware of taking corners at excessive speeds!",
+	"color": "dark_purple",
+	"italic": true
+      }
+    ]
   }
 }
 

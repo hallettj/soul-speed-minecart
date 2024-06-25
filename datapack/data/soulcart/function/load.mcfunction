@@ -1,0 +1,4 @@
+scoreboard objectives add SoulCartXSpeed dummy
+scoreboard objectives add SoulCartZSpeed dummy
+scoreboard objectives add SoulCartParticleThrottle dummy
+scoreboard objectives add SoulCartExploding dummy
