@@ -1,6 +1,24 @@
-# Teleport 3 blocks in the direction of travel to simulate moving much faster
-# than a normal minecart.
-tp ^ ^ ^3
+# Teleport a few blocks in the direction of travel to simulate moving much
+# faster than a normal minecart. Scale teleport distance by speed to approximate
+# smooth acceleration.
+#
+# These values sample from a linear formula:
+#
+#     d = (SoulCartSpeed - 100) / 50
+#
+# So the maximum teleport distance per game tick is 3 blocks. That is on top of
+# the minecart's base speed.
+
+execute if score @s SoulCartSpeed matches 100..115 run tp ^ ^ ^0.3
+execute if score @s SoulCartSpeed matches 116..130 run tp ^ ^ ^0.6
+execute if score @s SoulCartSpeed matches 131..145 run tp ^ ^ ^0.9
+execute if score @s SoulCartSpeed matches 146..160 run tp ^ ^ ^1.2
+execute if score @s SoulCartSpeed matches 161..175 run tp ^ ^ ^1.5
+execute if score @s SoulCartSpeed matches 176..190 run tp ^ ^ ^1.8
+execute if score @s SoulCartSpeed matches 191..205 run tp ^ ^ ^2.1
+execute if score @s SoulCartSpeed matches 206..220 run tp ^ ^ ^2.4
+execute if score @s SoulCartSpeed matches 221..235 run tp ^ ^ ^2.7
+execute if score @s SoulCartSpeed matches 236.. run tp ^ ^ ^3
 
 # SoulCartParticleThrottle is used to control how often soul particles appear.
 # Decrement SoulCartParticleThrottle every tick while the value is greater than
