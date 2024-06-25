@@ -28,7 +28,7 @@ execute if score @s RacecartZSpeed matches ..-90 if block ~ ~ ~ #minecraft:rails
 # can occur when encountering a corner, teleporting past a corner, coming to the
 # end of the track, or hitting a block at the end of the track. (Adding `at @s`
 # updates the execute position to the minecart's new position after teleport.)
-execute at @s if score @s RacecartXSpeed matches 90.. unless block ~ ~ ~ #minecraft:rails[shape=east_west] at @p run function racecarts:explode
-execute at @s if score @s RacecartXSpeed matches ..-90 unless block ~ ~ ~ #minecraft:rails[shape=east_west] at @p run function racecarts:explode
-execute at @s if score @s RacecartZSpeed matches 90.. unless block ~ ~ ~ #minecraft:rails[shape=north_south] at @p run function racecarts:explode
-execute at @s if score @s RacecartZSpeed matches ..-90 unless block ~ ~ ~ #minecraft:rails[shape=north_south] at @p run function racecarts:explode
+execute at @s if score @s RacecartXSpeed matches 90.. unless block ~ ~ ~ #minecraft:rails[shape=east_west] run function racecarts:schedule_explosion
+execute at @s if score @s RacecartXSpeed matches ..-90 unless block ~ ~ ~ #minecraft:rails[shape=east_west] run function racecarts:schedule_explosion
+execute at @s if score @s RacecartZSpeed matches 90.. unless block ~ ~ ~ #minecraft:rails[shape=north_south] run function racecarts:schedule_explosion
+execute at @s if score @s RacecartZSpeed matches ..-90 unless block ~ ~ ~ #minecraft:rails[shape=north_south] run function racecarts:schedule_explosion
