@@ -1,3 +1,4 @@
+scoreboard objectives add SoulCartAccelerating dummy
 scoreboard objectives add SoulCartDirection dummy
 scoreboard objectives add SoulCartSpeed dummy
 scoreboard objectives add SoulCartXGameSpeed dummy
