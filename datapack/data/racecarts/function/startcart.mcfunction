@@ -1,5 +1,5 @@
 # This function is run by `main` which ensures thot `@s` is a minecart with
-# a player
+# a player above a soul soil block
 
 # Capture current minecart speed. Scoreboards hold integers, while motion vector
 # components are doubles. So we use the `scale` option to multiply the speed by
@@ -8,35 +8,27 @@ execute store result score @s RacecartXSpeed run data get entity @s Motion[0] 10
 execute store result score @s RacecartZSpeed run data get entity @s Motion[2] 100
 
 # Check if minecart is going at a minimum speed (0.9) on a straight piece of
-# rail that is placed over soul soul. If so increment its speed scoreboard value
-# in the direction the minecart is travelling.
-execute as @s[scores={RacecartXSpeed=90..}] at @s if block ~ ~ ~ #minecraft:rails[shape=east_west] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players add @s RacecartXSpeed 5
-execute as @s[scores={RacecartXSpeed=..-90}] at @s if block ~ ~ ~ #minecraft:rails[shape=east_west] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players remove @s RacecartXSpeed 5
-execute as @s[scores={RacecartZSpeed=90..}] at @s if block ~ ~ ~ #minecraft:rails[shape=north_south] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players add @s RacecartZSpeed 5
-execute as @s[scores={RacecartZSpeed=..-90}] at @s if block ~ ~ ~ #minecraft:rails[shape=north_south] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players remove @s RacecartZSpeed 5
-#
-# execute as @s[scores={RacecartXSpeed=90..}] at @s if block ~ ~ ~ #minecraft:rails[shape=east_west] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players set @s RacecartXSpeed 225
-# execute as @s[scores={RacecartXSpeed=..-90}] at @s if block ~ ~ ~ #minecraft:rails[shape=east_west] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players set @s RacecartXSpeed -225 
-# execute as @s[scores={RacecartZSpeed=90..}] at @s if block ~ ~ ~ #minecraft:rails[shape=north_south] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players set @s RacecartZSpeed 225 
-# execute as @s[scores={RacecartZSpeed=..-90}] at @s if block ~ ~ ~ #minecraft:rails[shape=north_south] if block ~ ~-1 ~ minecraft:soul_soil run scoreboard players set @s RacecartZSpeed -225
+# rail. If so keep it in constant motion.
+execute if score @s RacecartXSpeed matches 90.. if block ~ ~ ~ #minecraft:rails[shape=east_west] run data modify entity @s Motion[0] set value 1.0
+execute if score @s RacecartXSpeed matches ..-90 if block ~ ~ ~ #minecraft:rails[shape=east_west] run data modify entity @s Motion[0] set value -1.0
+execute if score @s RacecartZSpeed matches 90.. if block ~ ~ ~ #minecraft:rails[shape=north_south] run data modify entity @s Motion[2] set value 1.0
+execute if score @s RacecartZSpeed matches ..-90 if block ~ ~ ~ #minecraft:rails[shape=north_south] run data modify entity @s Motion[2] set value -1.0
 
-# Show soul particles
-execute as @s[scores={RacecartXSpeed=95..}] at @s if block ~1 ~ ~ #minecraft:rails[shape=east_west] if block ~1 ~-1 ~ minecraft:soul_soil facing ~1 ~ ~ run function racecarts:move
-execute as @s[scores={RacecartXSpeed=..-95}] at @s if block ~-1 ~ ~ #minecraft:rails[shape=east_west] if block ~-1 ~-1 ~ minecraft:soul_soil facing ~-1 ~ ~ run function racecarts:move
-execute as @s[scores={RacecartZSpeed=95..}] at @s if block ~ ~ ~1 #minecraft:rails[shape=north_south] if block ~ ~-1 ~1 minecraft:soul_soil facing ~ ~ ~1 run function racecarts:move
-execute as @s[scores={RacecartZSpeed=..-95}] at @s if block ~ ~ ~-1 #minecraft:rails[shape=north_south] if block ~ ~-1 ~-1 minecraft:soul_soil facing ~ ~ ~-1 run function racecarts:move
+# (I'd line these clauses up, but commands actually fail to parse if there are
+# multiple spaces between tokens.)
 
-# Cap speed at 1.0 which is the max value that the game allows
-execute as @s[scores={RacecartXSpeed=100..}] run scoreboard players set @s RacecartXSpeed 100
-execute as @s[scores={RacecartXSpeed=..-100}] run scoreboard players set @s RacecartXSpeed -100
-execute as @s[scores={RacecartZSpeed=100..}] run scoreboard players set @s RacecartZSpeed 100
-execute as @s[scores={RacecartZSpeed=..-100}] run scoreboard players set @s RacecartZSpeed -100
+# This is the call that actually moves the minecart faster than normal. Teleport
+# the minecart forward 3 blocks, and show soul particles every four ticks.
+execute if score @s RacecartXSpeed matches 90.. if block ~ ~ ~ #minecraft:rails[shape=east_west] facing ~1 ~ ~ run function racecarts:move
+execute if score @s RacecartXSpeed matches ..-90 if block ~ ~ ~ #minecraft:rails[shape=east_west] facing ~-1 ~ ~ run function racecarts:move
+execute if score @s RacecartZSpeed matches 90.. if block ~ ~ ~ #minecraft:rails[shape=north_south] facing ~ ~ ~1 run function racecarts:move
+execute if score @s RacecartZSpeed matches ..-90 if block ~ ~ ~ #minecraft:rails[shape=north_south] facing ~ ~ ~-1 run function racecarts:move
 
-# Set increased minecart speed. Multiply by 0.01 to reverse the scoreboard scale
-# factor. This is just to make sure that the minecart keeps moving at a base
-# speed. The actual "faster minecart" behavior is achived with the tp command in
-# the `move` function.
-execute as @s[scores={RacecartXSpeed=95..}] store result entity @s Motion[0] double 0.01 run scoreboard players get @s RacecartXSpeed
-execute as @s[scores={RacecartXSpeed=..-95}] store result entity @s Motion[0] double 0.01 run scoreboard players get @s RacecartXSpeed
-execute as @s[scores={RacecartZSpeed=95..}] store result entity @s Motion[2] double 0.01 run scoreboard players get @s RacecartZSpeed
-execute as @s[scores={RacecartZSpeed=..-95}] store result entity @s Motion[2] double 0.01 run scoreboard players get @s RacecartZSpeed
+# After teleporting check for derailement, and apply consequences. Derailment
+# can occur when encountering a corner, teleporting past a corner, coming to the
+# end of the track, or hitting a block at the end of the track. (Adding `at @s`
+# updates the execute position to the minecart's new position after teleport.)
+execute at @s if score @s RacecartXSpeed matches 90.. unless block ~ ~ ~ #minecraft:rails[shape=east_west] at @p run function racecarts:explode
+execute at @s if score @s RacecartXSpeed matches ..-90 unless block ~ ~ ~ #minecraft:rails[shape=east_west] at @p run function racecarts:explode
+execute at @s if score @s RacecartZSpeed matches 90.. unless block ~ ~ ~ #minecraft:rails[shape=north_south] at @p run function racecarts:explode
+execute at @s if score @s RacecartZSpeed matches ..-90 unless block ~ ~ ~ #minecraft:rails[shape=north_south] at @p run function racecarts:explode
