@@ -58,8 +58,9 @@ execute if score @s SoulCartDirection matches 3 facing ~ ~ ~-1 run function soul
 # Accelerate while high-speed conditions are met
 execute if score @s SoulCartAccelerating matches 1 run scoreboard players add @s SoulCartSpeed 1
 
-# Decelerate while high-speed conditions are not met
-execute unless score @s SoulCartAccelerating matches 1 run scoreboard players remove @s SoulCartSpeed 5
+# Decelerate while high-speed conditions are not met. With a value of 50 it
+# takes 8 blocks to safely decelerate from full speed.
+execute unless score @s SoulCartAccelerating matches 1 run scoreboard players remove @s SoulCartSpeed 50
 
 # Cap at maximum speed
 execute if score @s SoulCartSpeed matches 250.. run scoreboard players set @s SoulCartSpeed 250
