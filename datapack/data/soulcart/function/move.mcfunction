@@ -26,7 +26,7 @@ execute if score @s SoulCartSpeed matches 236.. run tp ^ ^ ^3
 execute if score @s SoulCartParticleThrottle matches 1.. run scoreboard players remove @s SoulCartParticleThrottle 1
 
 # Produce a particle every fourth invocation to reduce lag.
-execute unless score @s SoulCartParticleThrottle matches 1.. run particle minecraft:soul ^ ^ ^6 0.2 0.5 0.2 0 1
+execute if score @s SoulCartSpeed matches 100.. unless score @s SoulCartParticleThrottle matches 1.. run particle minecraft:soul ^ ^ ^6 0.2 0.5 0.2 0 1
 
 # Restart SoulCartParticleThrottle when it reaches zero, or if it has not been
 # set before.
