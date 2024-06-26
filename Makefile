@@ -2,7 +2,7 @@
 
 datapack_files := $(shell find datapack/)
 
-all: faster-carts.zip
+all: soulcart.zip
 
-faster-carts.zip: $(datapack_files)
+soulcart.zip: $(datapack_files)
 	cd datapack && zip -r ../$@ *
